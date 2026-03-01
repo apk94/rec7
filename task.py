@@ -57,7 +57,12 @@ class Task(object):
 
     def q1(self):
         query = '''
-            
+            SELECT g.sid, c.year, c.semester, COUNT(*)
+            FROM Grades g 
+            JOIN Courses c ON g.cid = c.cid
+            WHERE g.grade > 0 
+            GROUP BY g.sid, c.year, c.semester 
+            ORDER BY g.sid, c.year, c.semester 
         '''
         self.cur.execute(query)
         all_rows = self.cur.fetchall()
@@ -65,7 +70,14 @@ class Task(object):
     
     def q2(self):
         query = '''
-            
+            SELECT s.firstname, s.lastname, c.year, c.semester, COUNT(*)
+            FROM Students s 
+            JOIN Grades g ON s.sid = g.sid 
+            JOIN Courses c ON g.cid = c.cid 
+            WHERE g.grade > 0
+            GROUP BY s.sid, c.year, c.semester
+            HAVING COUNT(*) >= 2
+            ORDER BY s.firstname, s.lastname, c.year, c.semester 
         '''
         self.cur.execute(query)
         all_rows = self.cur.fetchall()
@@ -73,23 +85,37 @@ class Task(object):
 
     def q3(self):
         query = '''
-            
+            SELECT firstname, lastname, ms, number
+            FROM allgrades 
+            WHERE grade = 0 and ms = mc 
+            ORDER BY firstname, lastname, ms, number 
         '''
         self.cur.execute(query)
         all_rows = self.cur.fetchall()
         return all_rows
         
     def q4(self):
-        query = '''
-            
+         query = '''
+            SELECT s.firstname, s.lastname, m.major, c.number
+            FROM Students s
+            JOIN Majors m ON s.sid  = m.sid 
+            JOIN Grades g ON s.sid = g.sid 
+            JOIN Courses c ON g.cid = c.cid 
+            WHERE g.grade = 0 AND m.major = c.major 
+            ORDER BY s.firstname, s.lastname, m.major, c.number 
         '''
         self.cur.execute(query)
         all_rows = self.cur.fetchall()
         return all_rows
 
     def q5(self):
-        query = '''
-            
+         query = '''
+             SELECT c.professor, COUNT(*) AS success 
+             FROM Courses c 
+             JOIN Grades g ON c.cid = g.cid 
+             WHERE g.grade >= 2
+             GROUP BY c.professor 
+             ORDER BY success DESC, c.professor ASC 
         '''
         self.cur.execute(query)
         all_rows = self.cur.fetchall()
@@ -97,7 +123,15 @@ class Task(object):
 
     def q6(self):
         query = '''
-            
+            SELECT 
+            c.number AS course_number, GROUP_CONCAT(s.firstname || ' ' || s.lastname, ', ') AS student_names, AVG(g.grade) AS avg_grade
+            FROM Courses c 
+            JOIN Grades g ON c.cid = g.cid 
+            JOIN Students s on g.sid = s.sid 
+            WHERE g.grade >= 2
+            GROUP BY course_number 
+            HAVING avg_grade > 3
+            ORDER BY avg_grade DESC, student_names, course_number 
         '''
         self.cur.execute(query)
         all_rows = self.cur.fetchall()
