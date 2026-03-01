@@ -95,7 +95,7 @@ class Task(object):
         return all_rows
         
     def q4(self):
-         query = '''
+        query = '''
             SELECT s.firstname, s.lastname, m.major, c.number
             FROM Students s
             JOIN Majors m ON s.sid  = m.sid 
@@ -109,17 +109,17 @@ class Task(object):
         return all_rows
 
     def q5(self):
-         query = '''
-             SELECT c.professor, COUNT(*) AS success 
-             FROM Courses c 
-             JOIN Grades g ON c.cid = g.cid 
-             WHERE g.grade >= 2
-             GROUP BY c.professor 
-             ORDER BY success DESC, c.professor ASC 
-        '''
-        self.cur.execute(query)
-        all_rows = self.cur.fetchall()
-        return all_rows
+    query = '''
+         SELECT c.professor, COUNT(*) AS success 
+         FROM Courses c 
+         JOIN Grades g ON c.cid = g.cid 
+         WHERE g.grade >= 2
+         GROUP BY c.professor 
+         ORDER BY success DESC, c.professor ASC 
+    '''
+    self.cur.execute(query)
+    all_rows = self.cur.fetchall()
+    return all_rows
 
     def q6(self):
         query = '''
