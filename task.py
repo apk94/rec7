@@ -124,14 +124,16 @@ class Task(object):
     def q6(self):
         query = '''
             SELECT 
-            c.number AS course_number, GROUP_CONCAT(s.firstname || ' ' || s.lastname, ', ') AS student_names, AVG(g.grade) AS avg_grade
+                c.number AS course_number, 
+                GROUP_CONCAT(s.firstName || ' ' || s.lastName, ', ') AS student_names, 
+                AVG(g.grade) AS avg_grade
             FROM Courses c 
             JOIN Grades g ON c.cid = g.cid 
-            JOIN Students s on g.sid = s.sid 
+            JOIN Students s ON g.sid = s.sid 
             WHERE g.grade >= 2
             GROUP BY course_number 
             HAVING avg_grade > 3
-            ORDER BY avg_grade DESC, student_names, course_number 
+            ORDER BY avg_grade DESC, student_names ASC, course_number ASC 
         '''
         self.cur.execute(query)
         all_rows = self.cur.fetchall()
